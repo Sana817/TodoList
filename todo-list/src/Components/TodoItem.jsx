@@ -1,7 +1,9 @@
 import React from "react";
 import "../Styles/TodoStyle.css";
-
+import { useDispatch, useSelector } from "react-redux";
+import { updateTask, editTask, deleteTask } from "../Actions/index";
 function TodoItem(props) {
+  const dispatch = useDispatch(); // to trigger actions
   return (
     <li>
       {props.item.editing ? (
@@ -9,13 +11,9 @@ function TodoItem(props) {
           type="text"
           defaultValue={props.item.item}
           name="item"
-          // onChange={(e) => {
-          //   // props.updateItem(props.item.id, e.target.value);
-          //   console.log("new value " + e.target.value);
-          // }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              props.updateItem(props.item, e.target.value);
+              dispatch(updateTask(props.item.id, e.target.value));
             }
           }}
         />
@@ -23,7 +21,7 @@ function TodoItem(props) {
         <>
           <input
             type="checkbox"
-            defaultChecked={props.item.editing || false}
+            defaultChecked={props.item.editing}
             id="checkboxInput"
           />
           <span>{props.item.item}</span>
@@ -34,12 +32,12 @@ function TodoItem(props) {
       <i
         className="fa fa-pencil-square-o edit"
         aria-hidden="true"
-        onClick={() => props.editItem(props.item)} // edit item icon
+        onClick={() => dispatch(editTask(props.item.id))} // edit item icon
       ></i>
       <i
         className="fa fa-trash del"
         aria-hidden="true"
-        onClick={() => props.deleteItem(props.item)} // delete item icon
+        onClick={() => dispatch(deleteTask(props.item.id))} // delete item icon
       ></i>
     </li>
   );
