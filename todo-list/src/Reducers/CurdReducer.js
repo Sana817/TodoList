@@ -22,4 +22,5 @@ const changeTasks = (state = initalState, action) => {
       return state;
   }
 };
+
 export default changeTasks;

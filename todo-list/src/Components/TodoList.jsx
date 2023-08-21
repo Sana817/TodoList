@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styles/TodoStyle.css";
 import TodoItem from "./TodoItem";
 import { nanoid } from "nanoid";
@@ -8,6 +8,7 @@ import { addTask } from "../Actions/index";
 function TodoList() {
   const myState = useSelector((state) => state.changeTasks); // to get the state from store use useSelector
   const dispatch = useDispatch(); // to trigger actions
+
   const [item, setItem] = useState({
     id: "",
     item: "",
@@ -19,11 +20,17 @@ function TodoList() {
   };
 
   const handleKeyDown = (event) => {
-    console.log("on adding the item  " + item);
+    console.log("on adding the item  " + item.item);
     if (event.key === "Enter") {
-      dispatch(addTask(item));
+      if (item.item !== "") {
+        dispatch(addTask(item));
+      }
     }
-    setItem({});
+    setItem({
+      id: "",
+      item: "",
+      editing: false,
+    });
   };
   return (
     <>
