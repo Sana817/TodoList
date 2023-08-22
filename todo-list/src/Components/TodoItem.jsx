@@ -1,11 +1,9 @@
 import React from "react";
 import "../Styles/TodoStyle.css";
-
-import { taskController } from "../Controller/TodoStates";
+import { taskHandler, useTaskState } from "../Controller/TodoStates";
 function TodoItem(props) {
-  console.log(
-    "in todo item the item is :" + props.item.id + " " + props.item.item
-  );
+  const controller = taskHandler(useTaskState());
+
   return (
     <li>
       {props.item.editing ? (
@@ -15,7 +13,7 @@ function TodoItem(props) {
           name="item"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              taskController.updateTask(props.item.id, e.target.value);
+              controller.updateTask(props.item.id, e.target.value);
             }
           }}
         />
@@ -33,13 +31,13 @@ function TodoItem(props) {
       <i
         className="fa fa-pencil-square-o edit"
         aria-hidden="true"
-        onClick={() => taskController.editTask(props.item.id)}
+        onClick={() => controller.editTask(props.item.id)}
       ></i>
       <i
         className="fa fa-trash del"
         aria-hidden="true"
         onClick={() => {
-          taskController.removeTask(props.item.id);
+          controller.removeTask(props.item.id);
         }}
       ></i>
     </li>

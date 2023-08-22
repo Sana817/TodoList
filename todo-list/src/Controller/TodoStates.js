@@ -24,6 +24,7 @@ export const taskHandler = (state) => {
           task.id === id ? { ...task, editing: !task.editing } : task
         )
       );
+      // console.log("new state"+state.get({noproxy:true}))
     },
     updateTask(id, updatedValue) {
       return state.set((tasks) =>
@@ -36,8 +37,10 @@ export const taskHandler = (state) => {
     },
 
     get getTasks() {
+      console.log(state.get({ noproxy: true }));
       return state.get({ noproxy: true });
     },
   };
 };
 export const taskController = taskHandler(globalTodoList);
+// export const stateController = taskHandler(useHookstate(globalTodoList));
