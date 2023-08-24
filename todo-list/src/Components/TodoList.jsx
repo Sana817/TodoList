@@ -1,29 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styles/TodoStyle.css";
 import TodoItem from "./TodoItem";
-
-import { taskHandler, useTaskState } from "../Controller/TodoStates";
+const {
+  addTask,
+  getAllTasks,
+  updateTask,
+  removeTask,
+} = require("../Controller/TodoController");
 
 function TodoList() {
-  const controller = taskHandler(useTaskState());
   const [item, setItem] = useState({
-    id: "",
-    item: "",
+    task: "",
     editing: false,
   }); // single item
 
-  console.log(controller.getTasks);
-  const onChange = (event) => {
-    console.log("target value on change: " + event.target.value);
-    setItem({ ...item, item: event.target.value });
+  const [tasks, setTasks] = useState([]); // State to store tasks
+
+  useEffect(() => {
+    fetchAllTasks();
+  }, []);
+
+  const fetchAllTasks = async () => {
+    try {
+      const tasks = await getAllTasks();
+      setTasks(tasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter" && item.item !== "") {
-      controller.addTask(item);
+  const handleRemove = async (taskId) => {
+    try {
+      await removeTask(taskId);
+      await fetchAllTasks();
+    } catch (error) {
+      console.error("Error removing task:", error);
+    }
+  };
+  const handleUpdate = async (newTask) => {
+    try {
+      await updateTask(newTask);
+      await fetchAllTasks();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+  const onChange = (event) => {
+    console.log("target value on change: " + event.target.value);
+    setItem({ ...item, task: event.target.value });
+  };
+
+  const handleKeyDown = async (event) => {
+    if (event.key === "Enter" && item.task !== "") {
+      await addTask(item);
+      await fetchAllTasks();
       setItem({
-        id: "",
-        item: "",
+        task: "",
         editing: false,
       });
     }
@@ -36,8 +68,8 @@ function TodoList() {
         <input
           className="addItems"
           type="text"
-          name="item"
-          value={item.item}
+          name="task"
+          value={item.task}
           id="item"
           placeholder="Input task name and then tab enter to add"
           onKeyDown={handleKeyDown}
@@ -46,10 +78,14 @@ function TodoList() {
 
         <hr />
         <ul>
-          {controller.getTasks.length > 0 &&
-            controller.getTasks.map((list) => (
-              <TodoItem key={list.id} item={list}></TodoItem>
-            ))}
+          {tasks.map((list) => (
+            <TodoItem
+              key={list._id}
+              item={list}
+              updateTask={handleUpdate}
+              removeTask={handleRemove}
+            ></TodoItem>
+          ))}
         </ul>
       </div>
     </>

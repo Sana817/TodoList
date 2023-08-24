@@ -1,19 +1,21 @@
 import React from "react";
 import "../Styles/TodoStyle.css";
-import { taskHandler, useTaskState } from "../Controller/TodoStates";
-function TodoItem(props) {
-  const controller = taskHandler(useTaskState());
 
+function TodoItem(props) {
   return (
     <li>
       {props.item.editing ? (
         <input
           type="text"
-          defaultValue={props.item.item}
+          defaultValue={props.item.task}
           name="item"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              controller.updateTask(props.item.id, e.target.value);
+              props.updateTask({
+                ...props.item,
+                task: e.target.value,
+                editing: !props.item.editing,
+              });
             }
           }}
         />
@@ -24,20 +26,22 @@ function TodoItem(props) {
             defaultChecked={props.item.editing}
             id="checkboxInput"
           />
-          <span>{props.item.item}</span>
+          <span>{props.item.task}</span>
         </>
       )}
 
       <i
         className="fa fa-pencil-square-o edit"
         aria-hidden="true"
-        onClick={() => controller.editTask(props.item.id)}
+        onClick={() =>
+          props.updateTask({ ...props.item, editing: !props.item.editing })
+        }
       ></i>
       <i
         className="fa fa-trash del"
         aria-hidden="true"
         onClick={() => {
-          controller.removeTask(props.item.id);
+          props.removeTask(props.item._id);
         }}
       ></i>
     </li>
