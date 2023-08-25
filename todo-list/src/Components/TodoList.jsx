@@ -63,30 +63,32 @@ function TodoList() {
 
   return (
     <>
-      <div className="container inner">
-        <h1>My Todo</h1>
-        <input
-          className="addItems"
-          type="text"
-          name="task"
-          value={item.task}
-          id="item"
-          placeholder="Input task name and then tab enter to add"
-          onKeyDown={handleKeyDown}
-          onChange={onChange}
-        />
+      <div className="outer">
+        <div className="container inner ">
+          <h1>My Todo</h1>
+          <input
+            className="addItems"
+            type="text"
+            name="task"
+            value={item.task}
+            id="item"
+            placeholder="Input task name and then tab enter to add"
+            onKeyDown={handleKeyDown}
+            onChange={onChange}
+          />
 
-        <hr />
-        <ul>
-          {tasks.map((list) => (
-            <TodoItem
-              key={list._id}
-              item={list}
-              updateTask={handleUpdate}
-              removeTask={handleRemove}
-            ></TodoItem>
-          ))}
-        </ul>
+          <hr />
+          <ul>
+            {tasks.map((list) => (
+              <TodoItem
+                key={list._id}
+                item={list}
+                updateTask={handleUpdate}
+                removeTask={handleRemove}
+              ></TodoItem>
+            ))}
+          </ul>
+        </div>
       </div>
     </>
   );

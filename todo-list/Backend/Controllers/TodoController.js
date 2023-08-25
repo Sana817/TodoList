@@ -2,26 +2,27 @@ const todoListModel = require("../Models/TodoListModel");
 
 // Controller 1 :get all tasks
 const getAllTasks = async (req, res) => {
+  const user = req.user.userId; // Assuming you have user information in req.user
+  console.log("user id in get all tasks", user);
   try {
-    const result = await todoListModel.find({});
-    // console.log("all tasks " + result);
+    const result = await todoListModel.find({ user: user });
     res.json(result);
   } catch (error) {
-    res.status(500).send({ error: "The products cannot get from db." });
+    res.status(500).send({ error: "Could not fetch tasks." });
   }
 };
 
 // Controller 2: add new task
 const addTask = async (req, res) => {
   const { task, editing } = req.body;
-  console.log("Adding task:", task, editing);
+  const user = req.user.userId; // Assuming you have user information in req.user
+
   try {
-    const newTask = new todoListModel({ task, editing });
+    const newTask = new todoListModel({ user: user, task, editing });
     const result = await newTask.save();
     console.log("Added new task:", result);
     if (result) res.json(result);
   } catch (error) {
-    // console.error("Error adding task:", error);
     res.status(500).send({ error: "Could not add task." });
   }
 };
