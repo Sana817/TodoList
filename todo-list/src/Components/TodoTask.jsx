@@ -1,19 +1,20 @@
 import React from "react";
 import "../Styles/TodoStyle.css";
-import { taskHandler, useTaskState } from "../Controller/TodoStates";
-function TodoItem(props) {
-  const controller = taskHandler(useTaskState());
+import { taskHandler, useTaskState } from "../Controller/TodoListStates";
+
+function TodoTask(props) {
+  const todoListController = taskHandler(useTaskState());
 
   return (
     <li>
-      {props.item.editing ? (
+      {props.task.editing ? (
         <input
           type="text"
           defaultValue={props.item.item}
-          name="item"
+          name="name"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              controller.updateTask(props.item.id, e.target.value);
+              todoListController.updateTask(props.task.id, e.target.value);
             }
           }}
         />
@@ -21,27 +22,27 @@ function TodoItem(props) {
         <>
           <input
             type="checkbox"
-            defaultChecked={props.item.editing}
+            defaultChecked={props.task.editing}
             id="checkboxInput"
           />
-          <span>{props.item.item}</span>
+          <span>{props.task.name}</span>
         </>
       )}
 
       <i
         className="fa fa-pencil-square-o edit"
         aria-hidden="true"
-        onClick={() => controller.editTask(props.item.id)}
+        onClick={() => todoListController.editTask(props.task.id)}
       ></i>
       <i
         className="fa fa-trash del"
         aria-hidden="true"
         onClick={() => {
-          controller.removeTask(props.item.id);
+          todoListController.removeTask(props.task.id);
         }}
       ></i>
     </li>
   );
 }
 
-export default TodoItem;
+export default TodoTask;
