@@ -1,94 +1,69 @@
 import React, { useState } from "react";
 import "../Styles/TodoStyle.css";
-import TodoItem from "./TodoItem";
+import TodoTask from "./TodoTask";
 import { nanoid } from "nanoid";
 
 function TodoList() {
-  const todoList = []; // initial List
-  const [list, setList] = useState(todoList); // overall list
-  const [item, setItem] = useState(""); // single item
+  const initialTodoList = [];
+  const [todoList, setTodoList] = useState(initialTodoList);
+  const [task, setTask] = useState("");
 
-  const onChange = (event) => {
-    setItem(event.target.value);
-  };
+  const addTask = () => {
+    if (task !== "") {
+      const newTodoList = todoList.concat({
+        id: nanoid(),
+        name: task,
+        editing: false,
+      });
 
-  const handleItem = () => {
-    // console.log("item   " + item);
-    if (item !== "") {
-      const newList = list.concat({ id: nanoid(), item: item, editing: false }); //nnaoid is use to assign random gereated it to each object uniquely
-      // for (const key in newList) {
-      //   const element = newList[key];
-      //   console.log(element);
-      // }
-      setList(newList);
+      setTodoList(newTodoList);
     }
-    // console.log("old list" + list[0]);
-    // console.log("new list" + newList);
-    setItem("");
+
+    setTask("");
   };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      handleItem();
+      addTask();
     }
   };
 
-  // delete a particluar item
-  const deleteItem = (element) => {
-    console.log("element id in delete" + element.id);
-    // const index = list.findIndex(function (item) {
-    //   return item.id === element.id;
-    // });
-
-    // console.log("index of deleteing item " + index);
-    // if (index > -1) {
-    //   list.splice(index, 1);
-    //   for (const key in list) {
-    //     const element = list[key];
-    //     console.log(element);
-    //   }
-    // }
-    const updatedList = list.filter((item) => item.id !== element.id);
-    setList(updatedList);
+  const deleteTask = (element) => {
+    const updatedTodoList = todoList.filter((task) => task.id !== element.id);
+    setTodoList(updatedTodoList);
   };
 
-  // edit a particular item
-  const editItem = (element) => {
-    const updatedList = list.map((item) => {
-      if (item.id === element.id) {
-        console.log(
-          "eidt function call to check editing b=value" + item.editing
-        );
-        return { ...item, editing: !item.editing };
+  const editTask = (element) => {
+    const updatedTodoList = todoList.map((task) => {
+      if (task.id === element.id) {
+        return { ...task, editing: !task.editing };
       }
-      return item;
+      return task;
     });
-    setList(updatedList);
+    setTodoList(updatedTodoList);
   };
 
-  // update item on editing
-  const updateItem = (element, updatedItem) => {
-    console.log(
-      "updatedItem is called " + updatedItem + "    " + element.editing
-    );
-    const updatedList = list.map((item) => {
-      if (item.id === element.id) {
-        return { ...item, item: updatedItem, editing: false };
+  const updateTask = (element, updatedTask) => {
+    const updatedTodoList = todoList.map((task) => {
+      if (task.id === element.id) {
+        return { ...task, name: updatedTask, editing: false };
       }
-      return item;
+      return task;
     });
-    setList(updatedList);
+    setTodoList(updatedTodoList);
   };
-
+  const onChange = (event) => {
+    setTask(event.target.value);
+  };
   return (
     <>
       <div className="container inner">
         <h1>My Todo</h1>
         <input
-          className="addItems"
+          className="addtasks"
           type="text"
-          name="item"
-          value={item}
-          id="item"
+          name="task"
+          value={task}
+          id="task"
           placeholder="Input task name and then tab enter to add"
           onKeyDown={handleKeyDown}
           onChange={onChange}
@@ -96,14 +71,14 @@ function TodoList() {
 
         <hr />
         <ul>
-          {list.map((list) => (
-            <TodoItem
-              key={list.id}
-              item={list}
-              deleteItem={deleteItem}
-              editItem={editItem}
-              updateItem={updateItem}
-            ></TodoItem>
+          {todoList.map((task) => (
+            <TodoTask
+              key={task.id}
+              task={task}
+              deleteTask={deleteTask}
+              editTask={editTask}
+              updateTask={updateTask}
+            ></TodoTask>
           ))}
         </ul>
       </div>
