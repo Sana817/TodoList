@@ -22,7 +22,6 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      // console.log("user at frontend", user);
       const res = await signup(user);
       if (res) {
         navigate("/");

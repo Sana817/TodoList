@@ -21,7 +21,6 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      // console.log("user at frontend", user);
       const res = await login(user);
       if (res) {
         localStorage.setItem("user-authentication", res);

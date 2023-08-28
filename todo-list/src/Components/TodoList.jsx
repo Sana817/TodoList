@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/TodoStyle.css";
-import TodoItem from "./TodoItem";
+import Todotask from "./TodoTask";
 const {
   addTask,
   getAllTasks,
@@ -9,12 +9,12 @@ const {
 } = require("../Controller/TodoController");
 
 function TodoList() {
-  const [item, setItem] = useState({
-    task: "",
+  const [task, setTask] = useState({
+    name: "",
     editing: false,
-  }); // single item
+  });
 
-  const [tasks, setTasks] = useState([]); // State to store tasks
+  const [todoList, setTodoList] = useState([]);
 
   useEffect(() => {
     fetchAllTasks();
@@ -23,13 +23,13 @@ function TodoList() {
   const fetchAllTasks = async () => {
     try {
       const tasks = await getAllTasks();
-      setTasks(tasks);
+      setTodoList(tasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
-  const handleRemove = async (taskId) => {
+  const handleRemoveTask = async (taskId) => {
     try {
       await removeTask(taskId);
       await fetchAllTasks();
@@ -37,7 +37,7 @@ function TodoList() {
       console.error("Error removing task:", error);
     }
   };
-  const handleUpdate = async (newTask) => {
+  const handleUpdateTask = async (newTask) => {
     try {
       await updateTask(newTask);
       await fetchAllTasks();
@@ -46,16 +46,15 @@ function TodoList() {
     }
   };
   const onChange = (event) => {
-    console.log("target value on change: " + event.target.value);
-    setItem({ ...item, task: event.target.value });
+    setTask({ ...task, name: event.target.value });
   };
 
   const handleKeyDown = async (event) => {
-    if (event.key === "Enter" && item.task !== "") {
-      await addTask(item);
+    if (event.key === "Enter" && task.task !== "") {
+      await addTask(task);
       await fetchAllTasks();
-      setItem({
-        task: "",
+      setTask({
+        name: "",
         editing: false,
       });
     }
@@ -67,11 +66,11 @@ function TodoList() {
         <div className="container inner ">
           <h1>My Todo</h1>
           <input
-            className="addItems"
+            className="addtasks"
             type="text"
             name="task"
-            value={item.task}
-            id="item"
+            value={task.task}
+            id="task"
             placeholder="Input task name and then tab enter to add"
             onKeyDown={handleKeyDown}
             onChange={onChange}
@@ -79,13 +78,13 @@ function TodoList() {
 
           <hr />
           <ul>
-            {tasks.map((list) => (
-              <TodoItem
-                key={list._id}
-                item={list}
-                updateTask={handleUpdate}
-                removeTask={handleRemove}
-              ></TodoItem>
+            {todoList.map((task) => (
+              <Todotask
+                key={task._id}
+                task={task}
+                updateTask={handleUpdateTask}
+                removeTask={handleRemoveTask}
+              ></Todotask>
             ))}
           </ul>
         </div>
