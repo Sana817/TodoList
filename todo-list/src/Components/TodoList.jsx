@@ -1,47 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../Styles/TodoStyle.css";
-import TodoItem from "./TodoItem";
+import TodoTask from "./TodoTask";
 import { nanoid } from "nanoid";
 import { useDispatch, useSelector } from "react-redux";
-import { addTask } from "../Actions/index";
+import { addTask } from "../Actions/TodoTaskActions";
 
 function TodoList() {
-  const myState = useSelector((state) => state.changeTasks); // to get the state from store use useSelector
-  const dispatch = useDispatch(); // to trigger actions
-
-  const [item, setItem] = useState({
+  const initialTodoTask = {
     id: "",
-    item: "",
+    name: "",
     editing: false,
-  }); // single item
-
-  const onChange = (event) => {
-    setItem({ ...item, id: nanoid(), item: event.target.value });
   };
+  const [task, setTask] = useState(initialTodoTask);
+  const todoListState = useSelector((state) => state.todoTaskReducer);
+  const dispatch = useDispatch();
 
   const handleKeyDown = (event) => {
-    console.log("on adding the item  " + item.item);
     if (event.key === "Enter") {
-      if (item.item !== "") {
-        dispatch(addTask(item));
+      if (task.name !== "") {
+        dispatch(addTask(task));
       }
     }
-    setItem({
-      id: "",
-      item: "",
-      editing: false,
-    });
+    setTask(initialTodoTask);
+  };
+  const onChange = (event) => {
+    setTask({ ...task, id: nanoid(), name: event.target.value });
   };
   return (
     <>
       <div className="container inner">
         <h1>My Todo</h1>
         <input
-          className="addItems"
+          className="addtasks"
           type="text"
-          name="item"
-          value={item.item}
-          id="item"
+          name="name"
+          value={task.name}
+          id="name"
           placeholder="Input task name and then tab enter to add"
           onKeyDown={handleKeyDown}
           onChange={onChange}
@@ -49,8 +43,8 @@ function TodoList() {
 
         <hr />
         <ul>
-          {myState.map((list) => (
-            <TodoItem key={list.id} item={list}></TodoItem>
+          {todoListState.map((list) => (
+            <TodoTask key={list.id} task={list}></TodoTask>
           ))}
         </ul>
       </div>

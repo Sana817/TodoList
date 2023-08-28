@@ -1,8 +1,7 @@
-// actions are what should be done
-export const addTask = (item) => {
+export const addTask = (task) => {
   return {
     type: "ADD_TASK",
-    item: item,
+    task: task,
   };
 };
 export const deleteTask = (id) => {
@@ -17,10 +16,10 @@ export const editTask = (id) => {
     id: id,
   };
 };
-export const updateTask = (id, value) => {
+export const updateTask = (id, updatedTask) => {
   return {
     type: "UPDATE_TASK",
     id: id,
-    value: value,
+    updatedTask: updatedTask,
   };
 };
