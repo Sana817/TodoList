@@ -1,64 +1,67 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/TodoStyle.css";
 import TodoItem from "./TodoItem";
-const {
-  addTask,
-  getAllTasks,
-  updateTask,
-  removeTask,
-} = require("../Controller/TodoController");
+import { taskHandler, useTaskState } from "../Controller/TodoListController";
 
 function TodoList() {
+  const controller = taskHandler(useTaskState());
+
   const [item, setItem] = useState({
     task: "",
     editing: false,
-  }); // single item
+  });
 
-  const [tasks, setTasks] = useState([]); // State to store tasks
+  const [tasks, setTasks] = useState([]);
 
-  useEffect(() => {
-    fetchAllTasks();
-  }, []);
-
-  const fetchAllTasks = async () => {
-    try {
-      const tasks = await getAllTasks();
-      setTasks(tasks);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
+  // fetch all tasks
+  const fetchTasks = async () => {
+    const fetchedTasks = await controller.getTasks();
+    setTasks(fetchedTasks);
+    console.log("tasks from front end ", fetchedTasks);
   };
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   const handleRemove = async (taskId) => {
     try {
-      await removeTask(taskId);
-      await fetchAllTasks();
+      await controller.removeTask(taskId);
+      fetchTasks();
     } catch (error) {
       console.error("Error removing task:", error);
     }
   };
+
   const handleUpdate = async (newTask) => {
     try {
-      await updateTask(newTask);
-      await fetchAllTasks();
+      await controller.updateTask(newTask);
+      fetchTasks();
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
-  const onChange = (event) => {
-    console.log("target value on change: " + event.target.value);
-    setItem({ ...item, task: event.target.value });
-  };
 
   const handleKeyDown = async (event) => {
-    if (event.key === "Enter" && item.task !== "") {
-      await addTask(item);
-      await fetchAllTasks();
-      setItem({
-        task: "",
-        editing: false,
-      });
+    if (event.key === "Enter" && item.task.trim() !== "") {
+      const taskExists = tasks.some((task) => task.task === item.task);
+      if (taskExists) {
+        alert("Task already exists in todo list");
+      } else {
+        await controller.addTask(item);
+
+        setItem({
+          task: "",
+          editing: false,
+        });
+      }
+      fetchTasks();
     }
+  };
+
+  const onChange = (event) => {
+    console.log("target value on change: " + event.target.value);
+
+    setItem({ ...item, task: event.target.value });
   };
 
   return (
