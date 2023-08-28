@@ -4,17 +4,17 @@ import "../Styles/TodoStyle.css";
 function TodoItem(props) {
   return (
     <li>
-      {props.item.editing ? (
+      {props.task.editing ? (
         <input
           type="text"
-          defaultValue={props.item.task}
-          name="item"
+          defaultValue={props.task.name}
+          name="name"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               props.updateTask({
-                ...props.item,
-                task: e.target.value,
-                editing: !props.item.editing,
+                ...props.task,
+                name: e.target.value,
+                editing: !props.task.editing,
               });
             }
           }}
@@ -26,7 +26,7 @@ function TodoItem(props) {
             defaultChecked={props.item.editing}
             id="checkboxInput"
           />
-          <span>{props.item.task}</span>
+          <span>{props.task.name}</span>
         </>
       )}
 
@@ -34,14 +34,14 @@ function TodoItem(props) {
         className="fa fa-pencil-square-o edit"
         aria-hidden="true"
         onClick={() =>
-          props.updateTask({ ...props.item, editing: !props.item.editing })
+          props.updateTask({ ...props.task, editing: !props.task.editing })
         }
       ></i>
       <i
         className="fa fa-trash del"
         aria-hidden="true"
         onClick={() => {
-          props.removeTask(props.item._id);
+          props.removeTask(props.task._id);
         }}
       ></i>
     </li>
