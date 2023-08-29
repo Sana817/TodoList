@@ -1,10 +1,8 @@
 const userModel = require("../Models/userModel");
 const jwt = require("jsonwebtoken");
 
-// Controller 1 to login
 const Login = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     const user = await userModel.findOne({ email });
     if (!user) {
@@ -12,7 +10,7 @@ const Login = async (req, res) => {
     }
 
     const isPasswordValid = await user.verifyPassword(password);
-    // console.log("password verify in login", isPasswordValid);
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
@@ -20,7 +18,6 @@ const Login = async (req, res) => {
       { userId: user._id },
       process.env.SECRETKEY
     );
-    console.log("jwt token ", generatedToken);
     res
       .status(200)
       .json({ message: "Login successful", token: generatedToken });
@@ -29,7 +26,6 @@ const Login = async (req, res) => {
   }
 };
 
-// Controller 2 to Signup
 const Signup = async (req, res) => {
   try {
     const { userName, email, password } = req.body;

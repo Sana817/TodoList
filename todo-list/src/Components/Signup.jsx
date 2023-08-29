@@ -39,7 +39,6 @@ const Signup = () => {
 
   const onSubmit = async (values) => {
     try {
-      console.log("user at frontend", values);
       const res = await controller.signup(values);
       if (res) {
         navigate("/");

@@ -1,67 +1,57 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/TodoStyle.css";
-import TodoItem from "./TodoItem";
+import TodoTask from "./TodoTask";
 import { taskHandler, useTaskState } from "../Controller/TodoListController";
 
 function TodoList() {
-  const controller = taskHandler(useTaskState());
-
-  const [item, setItem] = useState({
+  const initialTaskValues = {
     task: "",
     editing: false,
-  });
-
-  const [tasks, setTasks] = useState([]);
-
-  // fetch all tasks
-  const fetchTasks = async () => {
-    const fetchedTasks = await controller.getTasks();
-    setTasks(fetchedTasks);
-    console.log("tasks from front end ", fetchedTasks);
   };
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+  const todoListController = taskHandler(useTaskState());
+  const [todoList, setTodoList] = useState([]);
+  const [task, setTask] = useState(initialTaskValues);
 
-  const handleRemove = async (taskId) => {
+  useEffect(() => {
+    const fetchTodoList = async () => {
+      const fetchedTasks = await todoListController.getTasks();
+      setTodoList(fetchedTasks);
+    };
+    fetchTodoList();
+  }, [todoListController]);
+
+  const handleRemoveTask = async (taskId) => {
     try {
-      await controller.removeTask(taskId);
-      fetchTasks();
+      await todoListController.removeTask(taskId);
     } catch (error) {
       console.error("Error removing task:", error);
     }
   };
 
-  const handleUpdate = async (newTask) => {
+  const handleUpdateTask = async (newTask) => {
     try {
-      await controller.updateTask(newTask);
-      fetchTasks();
+      await todoListController.updateTask(newTask);
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
 
   const handleKeyDown = async (event) => {
-    if (event.key === "Enter" && item.task.trim() !== "") {
-      const taskExists = tasks.some((task) => task.task === item.task);
+    if (event.key === "Enter" && task.task.trim() !== "") {
+      const taskExists = todoList.some(
+        (prevTask) => prevTask.task === task.task
+      );
       if (taskExists) {
         alert("Task already exists in todo list");
       } else {
-        await controller.addTask(item);
-
-        setItem({
-          task: "",
-          editing: false,
-        });
+        await todoListController.addTask(task);
+        setTask(initialTaskValues);
       }
-      fetchTasks();
     }
   };
 
   const onChange = (event) => {
-    console.log("target value on change: " + event.target.value);
-
-    setItem({ ...item, task: event.target.value });
+    setTask({ ...task, task: event.target.value });
   };
 
   return (
@@ -73,7 +63,7 @@ function TodoList() {
             className="addItems"
             type="text"
             name="task"
-            value={item.task}
+            value={task.task}
             id="item"
             placeholder="Input task name and then tab enter to add"
             onKeyDown={handleKeyDown}
@@ -82,13 +72,13 @@ function TodoList() {
 
           <hr />
           <ul>
-            {tasks.map((list) => (
-              <TodoItem
-                key={list._id}
-                item={list}
-                updateTask={handleUpdate}
-                removeTask={handleRemove}
-              ></TodoItem>
+            {todoList.map((task) => (
+              <TodoTask
+                key={task._id}
+                task={task}
+                updateTask={handleUpdateTask}
+                removeTask={handleRemoveTask}
+              ></TodoTask>
             ))}
           </ul>
         </div>

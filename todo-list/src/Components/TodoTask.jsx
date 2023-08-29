@@ -1,20 +1,20 @@
 import React from "react";
 import "../Styles/TodoStyle.css";
 
-function TodoItem(props) {
+function TodoTask(props) {
   return (
     <li>
-      {props.item.editing ? (
+      {props.task.editing ? (
         <input
           type="text"
-          defaultValue={props.item.task}
-          name="item"
+          defaultValue={props.task.task}
+          name="task"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               props.updateTask({
-                ...props.item,
+                ...props.task,
                 task: e.target.value,
-                editing: !props.item.editing,
+                editing: !props.task.editing,
               });
             }
           }}
@@ -23,10 +23,10 @@ function TodoItem(props) {
         <>
           <input
             type="checkbox"
-            defaultChecked={props.item.editing}
+            defaultChecked={props.task.editing}
             id="checkboxInput"
           />
-          <span>{props.item.task}</span>
+          <span>{props.task.task}</span>
         </>
       )}
 
@@ -34,18 +34,18 @@ function TodoItem(props) {
         className="fa fa-pencil-square-o edit"
         aria-hidden="true"
         onClick={() =>
-          props.updateTask({ ...props.item, editing: !props.item.editing })
+          props.updateTask({ ...props.task, editing: !props.task.editing })
         }
       ></i>
       <i
         className="fa fa-trash del"
         aria-hidden="true"
         onClick={() => {
-          props.removeTask(props.item._id);
+          props.removeTask(props.task._id);
         }}
       ></i>
     </li>
   );
 }
 
-export default TodoItem;
+export default TodoTask;

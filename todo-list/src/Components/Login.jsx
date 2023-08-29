@@ -28,7 +28,6 @@ const Login = () => {
 
   const onSubmit = async (values) => {
     try {
-      console.log("values in form", values);
       const res = await controller.login(values);
       if (res) {
         localStorage.setItem("user-authentication", res);

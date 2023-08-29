@@ -15,7 +15,6 @@ const userSchema = mongoose.Schema({
   },
 });
 
-// hash password previous to store in db
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     const saltRounds = 10;
@@ -24,7 +23,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// verify password before login
 userSchema.methods.verifyPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
